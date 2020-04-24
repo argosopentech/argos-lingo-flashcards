@@ -20,6 +20,7 @@ rows = [re.sub(r',', '', row) for row in rows]
 rows = [re.sub(r';', '', row) for row in rows]
 rows = [re.sub(r'"', '', row) for row in rows]
 rows = [re.sub(r'\'', '', row) for row in rows]
+rows = [re.sub(r'English\.', '', row) for row in rows]
 
 # Remove rows without any words
 def more_than_one_alnum_char(x):
