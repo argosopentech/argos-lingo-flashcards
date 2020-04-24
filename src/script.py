@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+# This script reads the file 'Esperanto Self-Taught Vocab.csv',
+# does some cleaning up and writes the result to 'words.csv'
+
 import csv
 import re
 
