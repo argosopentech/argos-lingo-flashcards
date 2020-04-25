@@ -3,9 +3,13 @@
 # This script reads the file 'Esperanto Self-Taught Vocab.csv',
 # does some cleaning up and writes the result to 'words.csv'
 
+# Requires apertium and apertium-en-es linux packages (may work on other 
+# operating systems)
+
 import csv
 import re
 import os
+import subprocess
 
 # Read in csv file into a list of words with titles intermixed
 input_file = open('Esperanto Self-Taught Vocab.csv', 'r')
@@ -64,15 +68,25 @@ def write_list_to_csv(filename, rows):
     with open(filename, 'w') as output_file:
         csv_writer = csv.writer(output_file)
         for row in rows:
-            csv_writer.writerow([row])
+            csv_writer.writerow(row)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 if not os.path.exists(output_dir + '/csv'):
     os.makedirs(output_dir + '/csv')
 for lesson in lessons:
-    write_list_to_csv(output_dir + '/csv/' + lesson.title + 'csv', lesson.words)
-
+    words_as_list = [[word] for word in lesson.words]
+    write_list_to_csv(output_dir + '/csv/' + lesson.title + 'csv', words_as_list)
 with open(output_dir + '/all_words.csv', 'w') as output_file:
     csv_writer = csv.writer(output_file)
     for row in cleaned_words:
         csv_writer.writerow([row])
+
+# Translate into Spanish
+def translate_en_es(word):
+    return os.popen('echo ' + word + ' | apertium en-es').read().strip()
+if not os.path.exists(output_dir + '/en-es'):
+    os.makedirs(output_dir + '/en-es')
+for lesson in lessons:
+    translated = [[word, translate_en_es(word)] for word in lesson.words]
+    translated = filter(lambda x: x[1][0] != '*', translated)
+    write_list_to_csv(output_dir + '/en-es/' + lesson.title + 'csv' , translated)
